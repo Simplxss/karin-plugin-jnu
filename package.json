@@ -1,9 +1,10 @@
 {
-  "name": "karin-plugin-template",
+  "name": "karin-plugin-jnu",
   "version": "1.0.0",
-  "author": "Lain",
+  "author": "Simplxs",
   "type": "module",
   "dependencies": {
+    "cheerio": "1.0.0-rc.12"
   },
   "imports": {
     "#Karin": "./lib/imports/index.js",
