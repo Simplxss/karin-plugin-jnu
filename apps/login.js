@@ -1,6 +1,7 @@
 import { plugin, segment } from '#Karin'
 import { userNameLogin } from '../lib/apis/webvpn.js'
-import { login, getScore } from '../lib/apis/jwxt.js'
+import EJNAccount from '../lib/database/EJNAccount.js'
+import User from '../lib/database/User.js'
 
 export class hello extends plugin {
   constructor () {
@@ -17,7 +18,7 @@ export class hello extends plugin {
       rule: [
         {
           reg: `^密码登录(.*) (.*)$`,
-          fnc: "passwordLogin",
+          fnc: 'passwordLogin',
           log: false,
           permission: 'all'
         }
@@ -29,8 +30,13 @@ export class hello extends plugin {
     let params = /^密码登录(.*) (.*)$/.exec(this.e.msg)
     try {
       let cookies = await userNameLogin(params[1], params[2])
-      await login(cookies)
-      let score = await getScore(cookies)
+
+      let ejnAccount = new EJNAccount(params[1])
+      ejnAccount.create(params[2], cookies)
+      await ejnAccount.save()
+
+      let user = await new User(this.e.user_id).load()
+      await user.addEJNAccount(ejnAccount)
 
       this.e.reply('登录成功')
     } catch (e) {

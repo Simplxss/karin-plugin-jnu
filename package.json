@@ -4,7 +4,8 @@
   "author": "Simplxs",
   "type": "module",
   "dependencies": {
-    "cheerio": "1.0.0-rc.12"
+    "cheerio": "1.0.0-rc.12",
+    "sqlite3": "^5.1.7"
   },
   "imports": {
     "#Karin": "./lib/imports/index.js",

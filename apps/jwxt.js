@@ -1,7 +1,8 @@
 import { plugin, segment } from '#Karin'
-import { getScore } from '../lib/apis/jwxt.js'
+import { login, getScore } from '../lib/apis/jwxt.js'
+import User from '../lib/database/User.js'
 
-export class hello extends plugin {
+export class jwxt extends plugin {
   constructor () {
     super({
       // 必选 插件名称
@@ -16,20 +17,50 @@ export class hello extends plugin {
       rule: [
         {
           reg: `^成绩查询$`,
-          fnc: "getScoreList",
+          fnc: 'getScoreList',
           log: false,
           permission: 'all'
         }
-      ]
+      ],
+      task: [
+        {
+          name: '刷新成绩',
+          cron: '0 0 0 * * *',
+          fnc: 'refreshScore',
+          log: false,
+        }
+      ],
     })
   }
 
   async getScoreList () {
+    let cookies = (await (await new User(this.e.user_id).load()).getEJNAccount()).cookie
+    let res
     try {
-      let score = await getScore(cookies)
-
-    } catch (e) {
-      this.e.reply(e.message)
+      res = await getScore(cookies)
     }
+    catch (e) {
+      try {
+        await login(cookies)
+        res = await getScore(cookies)
+      }
+      catch (e) {
+        this.e.reply(e.message)
+      }
+    }
+    try {
+      let re = '|   课程名称   |  成绩  |  绩点  |\n'
+      res.items.forEach(item => {
+        re += `| ${item.kcmc} | ${item.cj} | ${item.jd} |\n`
+      })
+      this.e.reply(re)
+    }
+    catch (e) {
+      this.e.reply('查询失败')
+    }
+  }
+
+  async refreshScore () {
+
   }
 }
