@@ -1,4 +1,4 @@
-import { plugin, segment } from '#Karin'
+import { common, plugin, segment } from '#Karin'
 import { login, getScore } from '../lib/apis/jwxt.js'
 import User from '../lib/database/User.js'
 
@@ -53,10 +53,18 @@ export class jwxt extends plugin {
       res.items.forEach(item => {
         re += `| ${item.kcmc} | ${item.cj} | ${item.jd} |\n`
       })
-      this.e.reply(re)
+      const makeForward1 = common.makeForward(segment.markdown(re), this.e.user_id, this.e.sender.nick)
+      const id1 = await this.e.bot.UploadForwardMessage(this.e.contact, makeForward1)
+      const makeForward2 = common.makeForward(segment.forward(id1), this.e.user_id, this.e.sender.nick)
+      const id2 = await this.e.bot.UploadForwardMessage(this.e.contact, makeForward2)
+      try {
+        this.reply(segment.long_msg(id2))
+      } catch (e) {
+        this.reply(segment.forward(id2))
+      }
     }
     catch (e) {
-      this.e.reply('查询失败')
+      this.e.reply(e.message)
     }
   }
 
