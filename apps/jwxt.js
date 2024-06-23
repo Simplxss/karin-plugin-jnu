@@ -91,16 +91,18 @@ export class jwxt extends plugin {
         re += `| ${item.kcmc} | ${item.cj} | ${item.jd} |\n`
       })
 
-      let makeForward1 = common.makeForward(segment.markdown(re), String(bot.account.uin), bot.account.name)
-      let id1 = await bot.UploadForwardMessage(contact, makeForward1)
-      let makeForward2 = common.makeForward(segment.forward(id1), String(bot.account.uin), bot.account.name)
-      let id2 = await bot.UploadForwardMessage(contact, makeForward2)
+      // let makeForward1 = common.makeForward(segment.markdown(re), String(bot.account.uin), bot.account.name)
+      // let id1 = await bot.UploadForwardMessage(contact, makeForward1)
+      // let makeForward2 = common.makeForward(segment.forward(id1), String(bot.account.uin), bot.account.name)
+      // let id2 = await bot.UploadForwardMessage(contact, makeForward2)
 
-      try {
-        bot.SendMessage(contact, [segment.long_msg(id2)])
-      } catch (e) {
-        bot.SendMessage(contact, [segment.forward(id2)])
-      }
+      // try {
+      //   bot.SendMessage(contact, [segment.long_msg(id2)])
+      // } catch (e) {
+      //   bot.SendMessage(contact, [segment.forward(id2)])
+      // }
+
+      bot.SendMessage(contact, [segment.text(re)])
     }
     catch (e) {
       bot.SendMessage(contact, [segment.text(e.message)])
