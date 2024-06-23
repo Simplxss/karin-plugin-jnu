@@ -23,7 +23,7 @@ export class hello extends plugin {
           permission: 'all'
         },
         {
-          reg: `^手机号登录(.*) (.*)$`,
+          reg: `^手机号登录(.*)$`,
           fnc: 'phoneLogin',
           log: false,
           permission: 'all'
@@ -59,7 +59,30 @@ export class hello extends plugin {
   async phoneLogin () {
     let params = /^手机号登录(.*)$/.exec(this.e.msg)
     try {
-      let cookies = await codeLogin(params[1], params[2])
+      let cookies = await codeLogin(params[1], async (image, err) => {
+        if (err) {
+          this.reply(err)
+        }
+        this.reply('请输入验证码')
+        this.reply(segment.image(`base64://${Buffer.from(image).toString('base64')}`))
+        return await new Promise((resolve) => {
+          this.setContext(() => {
+            this.finish()
+            resolve(this.e.msg)
+          }, true)
+        })
+      }, async (err) => {
+        if (err) {
+          this.reply(err)
+        }
+        this.reply('请输入短信验证码')
+        return new Promise((resolve) => {
+          this.setContext(() => {
+            this.finish()
+            resolve(this.e.msg)
+          }, true)
+        })
+      })
 
       let ejnAccount = new EJNAccount(params[1])
       ejnAccount.create(params[2], cookies)

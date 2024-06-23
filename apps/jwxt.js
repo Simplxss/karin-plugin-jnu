@@ -31,7 +31,7 @@ export class jwxt extends plugin {
           permission: 'all'
         },
         {
-          reg: `^设置成绩自动刷新间隔 ([0-9]+)$`,
+          reg: `^设置成绩自动刷新间隔([0-9]+)$`,
           fnc: 'setRefreshInterval',
           log: false,
           permission: 'all'
@@ -72,7 +72,7 @@ export class jwxt extends plugin {
   }
 
   async setRefreshInterval () {
-    let params = /^设置成绩自动刷新间隔 ([0-9]+)$/.exec(this.e.msg)
+    let params = /^设置成绩自动刷新间隔([0-9]+)$/.exec(this.e.msg)
     let interval = parseInt(params[1])
     if (interval >= 10) {
       let user = await new User(this.e.self_id, this.e.user_id).load()
