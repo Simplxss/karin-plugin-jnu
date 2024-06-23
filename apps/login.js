@@ -1,5 +1,5 @@
 import { plugin, segment } from '#Karin'
-import { userNameLogin } from '../lib/apis/webvpn.js'
+import { userNameLogin, codeLogin } from '../lib/apis/webvpn.js'
 import EJNAccount from '../lib/database/EJNAccount.js'
 import User from '../lib/database/User.js'
 
@@ -21,6 +21,18 @@ export class hello extends plugin {
           fnc: 'passwordLogin',
           log: false,
           permission: 'all'
+        },
+        {
+          reg: `^手机号登录(.*) (.*)$`,
+          fnc: 'phoneLogin',
+          log: false,
+          permission: 'all'
+        },
+        {
+          reg: `^自动登录$`,
+          fnc: 'autoLogin',
+          log: false,
+          permission: 'all'
         }
       ]
     })
@@ -35,12 +47,43 @@ export class hello extends plugin {
       ejnAccount.create(params[2], cookies)
       await ejnAccount.save()
 
-      let user = await new User(this.e.user_id).load()
+      let user = await new User(this.e.self_id, this.e.user_id).load()
       await user.addEJNAccount(ejnAccount)
 
-      this.e.reply('登录成功')
+      this.reply('登录成功')
     } catch (e) {
-      this.e.reply(e.message)
+      this.reply(e.message)
+    }
+  }
+
+  async phoneLogin () {
+    let params = /^手机号登录(.*)$/.exec(this.e.msg)
+    try {
+      let cookies = await codeLogin(params[1], params[2])
+
+      let ejnAccount = new EJNAccount(params[1])
+      ejnAccount.create(params[2], cookies)
+      await ejnAccount.save()
+
+      let user = await new User(this.e.self_id, this.e.user_id).load()
+      await user.addEJNAccount(ejnAccount)
+
+      this.reply('登录成功')
+    } catch (e) {
+      this.reply(e.message)
+    }
+  }
+
+  async autoLogin () {
+    try {
+      let user = await new User(this.e.self_id, this.e.user_id).load()
+      let ejnAccount = await user.getEJNAccount()
+      let cookies = await userNameLogin(ejnAccount.account_id, ejnAccount.password)
+      ejnAccount.setCookie(cookies)
+
+      this.reply('登录成功')
+    } catch (e) {
+      this.reply(e.message)
     }
   }
 }
