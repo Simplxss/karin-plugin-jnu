@@ -1,7 +1,4 @@
-import { plugin, segment } from '#Karin'
-import { userNameLogin, codeLogin } from '../lib/apis/webvpn.js'
-import EJNAccount from '../lib/database/EJNAccount.js'
-import User from '../lib/database/User.js'
+import { plugin } from '#Karin'
 
 export class help extends plugin {
   constructor () {
@@ -35,7 +32,7 @@ export class help extends plugin {
       '教务系统帮助\n' +
       '成绩查询\n' +
       '开启/关闭成绩自动刷新\n' +
-      '设置成绩自动刷新间隔[分钟(大于10)]\n' +
+      '设置成绩自动刷新间隔[分钟(大于10)]'
     )
   }
 }
