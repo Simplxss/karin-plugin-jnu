@@ -1,4 +1,4 @@
-import { Bot, common, plugin, segment } from '#Karin'
+import { Bot, plugin, segment } from '#Karin'
 import { KarinContact } from '../../../lib/bot/KarinElement.js'
 import { login, getScore } from '../lib/apis/jwxt.js'
 import User, { getNeedRefreshedUser } from '../lib/database/User.js'

@@ -3,7 +3,7 @@ import { userNameLogin, codeLogin } from '../lib/apis/webvpn.js'
 import EJNAccount from '../lib/database/EJNAccount.js'
 import User from '../lib/database/User.js'
 
-export class hello extends plugin {
+export class ejn extends plugin {
   constructor () {
     super({
       // 必选 插件名称
