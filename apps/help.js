@@ -14,7 +14,7 @@ export class help extends plugin {
       // 以下rule、task、button、handler均为可选，如键入，则必须为数组
       rule: [
         {
-          reg: `帮助`,
+          reg: `^帮助$`,
           fnc: 'help',
           log: false,
           permission: 'all'
